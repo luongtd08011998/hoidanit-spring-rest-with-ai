@@ -1,41 +1,149 @@
 package vn.hoidanit.springrestwithai.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import java.time.Instant;
+
+// Đánh dấu class này là một JPA Entity, ánh xạ với bảng "users" trong database
+@Entity
+@Table(name = "users")
 public class User {
 
-	private Long id;
-	private String name;
-	private String email;
+    // Enum giới tính được khai báo trong cùng file
+    public enum GenderEnum {
+        MALE, FEMALE, OTHER
+    }
 
-	public User() {
-	}
+    // Khóa chính, tự tăng (AUTO_INCREMENT)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	public User(Long id, String name, String email) {
-		this.id = id;
-		this.name = name;
-		this.email = email;
-	}
+    private String name;
 
-	public Long getId() {
-		return id;
-	}
+    // Không được null và phải là duy nhất trong bảng
+    @Column(unique = true, nullable = false)
+    private String email;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    private String password;
 
-	public String getName() {
-		return name;
-	}
+    private Integer age;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    private String address;
 
-	public String getEmail() {
-		return email;
-	}
+    // Lưu giá trị Enum dưới dạng chuỗi STRING vào database (thay vì số thứ tự)
+    @Enumerated(EnumType.STRING)
+    private GenderEnum gender;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    private String avatar;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
+    // Constructor mặc định (no-args) bắt buộc với JPA
+    public User() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public GenderEnum getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderEnum gender) {
+        this.gender = gender;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                ", address='" + address + '\'' +
+                ", gender=" + gender +
+                ", avatar='" + avatar + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

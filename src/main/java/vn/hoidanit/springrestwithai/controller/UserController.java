@@ -2,7 +2,6 @@ package vn.hoidanit.springrestwithai.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,7 +22,6 @@ public class UserController {
 
 	private final UserService userService;
 
-	@Autowired
 	public UserController(UserService userService) {
 		this.userService = userService;
 	}
@@ -35,11 +33,9 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<User> getUserById(@PathVariable Long id) {
-		User user = userService.findById(id);
-		if (user == null) {
-			return ResponseEntity.notFound().build();
-		}
-		return ResponseEntity.ok(user);
+		return userService.findById(id)
+				.map(ResponseEntity::ok)
+				.orElse(ResponseEntity.notFound().build());
 	}
 
 	@PostMapping
@@ -50,11 +46,9 @@ public class UserController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-		User updatedUser = userService.update(id, user);
-		if (updatedUser == null) {
-			return ResponseEntity.notFound().build();
-		}
-		return ResponseEntity.ok(updatedUser);
+		return userService.update(id, user)
+				.map(ResponseEntity::ok)
+				.orElse(ResponseEntity.notFound().build());
 	}
 
 	@DeleteMapping("/{id}")
