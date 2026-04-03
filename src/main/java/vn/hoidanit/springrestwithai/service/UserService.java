@@ -1,10 +1,11 @@
 package vn.hoidanit.springrestwithai.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import vn.hoidanit.springrestwithai.exception.DuplicateResourceException;
+import vn.hoidanit.springrestwithai.exception.ResourceNotFoundException;
 import vn.hoidanit.springrestwithai.model.User;
 import vn.hoidanit.springrestwithai.repository.UserRepository;
 
@@ -21,32 +22,35 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-	public Optional<User> findById(Long id) {
-		return userRepository.findById(id);
+	public User findById(Long id) {
+		return userRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Người dùng", "id", id));
 	}
 
-	public User save(User user) {
+	public User create(User user) {
+		if (userRepository.existsByEmail(user.getEmail())) {
+			throw new DuplicateResourceException("Người dùng", "email", user.getEmail());
+		}
 		return userRepository.save(user);
 	}
 
-	public Optional<User> update(Long id, User updatedUser) {
-		return userRepository.findById(id).map(currentUser -> {
-			currentUser.setName(updatedUser.getName());
-			currentUser.setEmail(updatedUser.getEmail());
-			currentUser.setAge(updatedUser.getAge());
-			currentUser.setAddress(updatedUser.getAddress());
-			currentUser.setGender(updatedUser.getGender());
-			currentUser.setAvatar(updatedUser.getAvatar());
-			currentUser.setPassword(updatedUser.getPassword());
-			return userRepository.save(currentUser);
-		});
+	public User update(Long id, User updatedUser) {
+		User currentUser = userRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Người dùng", "id", id));
+		currentUser.setName(updatedUser.getName());
+		currentUser.setEmail(updatedUser.getEmail());
+		currentUser.setAge(updatedUser.getAge());
+		currentUser.setAddress(updatedUser.getAddress());
+		currentUser.setGender(updatedUser.getGender());
+		currentUser.setAvatar(updatedUser.getAvatar());
+		currentUser.setPassword(updatedUser.getPassword());
+		return userRepository.save(currentUser);
 	}
 
-	public boolean deleteById(Long id) {
+	public void deleteById(Long id) {
 		if (!userRepository.existsById(id)) {
-			return false;
+			throw new ResourceNotFoundException("Người dùng", "id", id);
 		}
 		userRepository.deleteById(id);
-		return true;
 	}
 }
